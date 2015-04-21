@@ -2,6 +2,7 @@ package com.ml;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 import javax.swing.JOptionPane;
@@ -19,7 +20,7 @@ public class SolvetTest {
 			System.out.println(""+size);
 			
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
 		int [][] blocks=new int[size][size];
@@ -30,7 +31,13 @@ public class SolvetTest {
 		Board initialBoard=new Board(blocks, size);
 		if(initialBoard.isSolveable())
 		{
+			Solver solver=new Solver(initialBoard);
+			ArrayList<Board> list=solver.solve();
+			for(int i=0;i<list.size();i++)
+				list.get(i).printSelf();
+			 
 			
+			System.out.println("Number Of moves: "+ (list.size()-1));
 		}
 		else
 			JOptionPane.showMessageDialog(null,"Unsolvable Puzzle.");
