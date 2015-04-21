@@ -8,10 +8,10 @@ import java.util.PriorityQueue;
 public class Solver {
 
 	private Board board;
-    public static int FLAG_HAMMING=1;
-    public static int FLAG_MANHATTAN=2;
-    public static int FLAG_LINEAR_CONFLICT=3;
-    public static int HEURISTIC=FLAG_MANHATTAN;
+	public static int FLAG_HAMMING = 1;
+	public static int FLAG_MANHATTAN = 2;
+	public static int FLAG_LINEAR_CONFLICT = 3;
+	public static int HEURISTIC = FLAG_LINEAR_CONFLICT;
 	public static int[][] goalBlocks;
 	private ArrayList<Board> boardList = new ArrayList<Board>();
 	private Comparator<Board> multiPurposeComparator = new Comparator<Board>() {
@@ -23,27 +23,31 @@ public class Solver {
 					return -1;
 				else
 					return 1;
-			} else
+			}if (HEURISTIC == FLAG_LINEAR_CONFLICT) {
+				if (board1.getLinearConflict() < board2.getLinearConflict())
+					return -1;
+				else
+					return 1;
+			} else {
+				if (board1.getManhattan() < board2.getManhattan())
+					return -1;
+				else
+					return 1;
+			}
 
-			if (board1.getManhattan() < board2.getManhattan())
-				return -1;
-			else
-				return 1;
-				
-				
-			
 		}
 	};
 	private PriorityQueue<Board> queue = new PriorityQueue<Board>(2, multiPurposeComparator);
 
 	public Solver(Board b) {
 		this.board = b;
+		
 		generateGoalState();
 		queue.add(board);
 		// board.generateNeighbors();
 		System.out.println("Hamming" + board.getHamming());
 		System.out.println("MANHATTAN: " + board.getManhattan());
-
+		//b.getLinearConflict();
 	}
 
 	public ArrayList<Board> solve() {
@@ -59,20 +63,18 @@ public class Solver {
 					queue.offer(tempBoard);
 				}
 			}
-			topBoard=queue.poll();
-			//topBoard.printSelf();
+			topBoard = queue.poll();
+			// topBoard.printSelf();
 		}
 		topBoard.printSelf();
-		System.out.println("moves:"+topBoard.getMoves());
+		System.out.println("moves:" + topBoard.getMoves());
 		boardList.add(topBoard);
-		while(topBoard.getParent()!=null)
-		{
-			topBoard=topBoard.getParent();
+		while (topBoard.getParent() != null) {
+			topBoard = topBoard.getParent();
 			boardList.add(topBoard);
 		}
 		Collections.reverse(boardList);
 		return boardList;
-		
 
 	}
 
